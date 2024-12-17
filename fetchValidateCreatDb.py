@@ -75,7 +75,7 @@ for i in range(0,len(data['items'])):
 
 
 # 3- create table
-eg = create_engine('postgresql://postgres:09101489397@localhost:5432/postgres')
+eg = create_engine('postgresql://username:password@localhost:5432/postgres')
 Base = declarative_base()
 Se = sessionmaker(bind=eg)
 se = Se()
