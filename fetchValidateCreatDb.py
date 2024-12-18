@@ -1,5 +1,5 @@
 import requests
-from pydantic import BaseModel
+from pydantic import BaseModel , Field
 from typing import Optional
 import json
 from sqlalchemy import create_engine
@@ -16,187 +16,186 @@ data = json.loads(response.text)
 
 # 2- validate data
 class DataV(BaseModel):
-    regNo: int
+    reg_no: int = Field(alias="regNo")
     name: str
-    rank0f12Month: Optional[int] = None
-    rank0f24Month: Optional[int] = None
-    rank0f36Month: Optional[int] = None
-    rank0f48Month: Optional[int] = None
-    rank0f60Month: Optional[int] = None
-    rankLastUpdate: str
-    fundType: int
-    typeOfInvest: str
-    fundSize: Optional[int] = None
-    initiationDate: str
-    dailyEfficiency: Optional[float] = None
-    weeklyEfficiency: Optional[float] = None
-    monthlyEfficiency: Optional[float] = None
-    quarterlyEfficiency: Optional[float] = None
-    sixMonthEfficiency: Optional[float] = None
-    annualEfficiency: Optional[float] = None
-    statisticalNav: Optional[float] = None
-    efficiency: Optional[float] = None
-    cancelNav: Optional[float] = None
-    issueNav: Optional[float] = None
-    dividendIntervalPeriod: Optional[int] = None
-    guaranteedEarningRate: Optional[float] = None
-    data: Optional[str] = None
-    netAsset: Optional[int] = None
-    estimatedEarningRate: Optional[float] = None
-    investedUnits: Optional[int] = None
-    articlesOfAssociationLink: Optional[str] = None
-    prosoectusLink: Optional[str] = None
-    websiteAddress: list
+    rank_of_12_month: Optional[int] = Field(alias="rank0f12Month", default=None)
+    rank_of_24_month: Optional[int] = Field(alias="rank0f24Month", default=None)
+    rank_of_36_month: Optional[int] = Field(alias="rank0f36Month", default=None)
+    rank_of_48_month: Optional[int] = Field(alias="rank0f48Month", default=None)
+    rank_of_60_month: Optional[int] = Field(alias="rank0f60Month", default=None)
+    rank_last_update: str = Field(alias="rankLastUpdate")
+    fund_type: int = Field(alias="fundType")
+    type_of_invest: str = Field(alias="typeOfInvest")
+    fund_size: Optional[int] = Field(alias="fundSize", default=None)
+    initiation_date: str = Field(alias="initiationDate")
+    daily_efficiency: Optional[float] = Field(alias="dailyEfficiency", default=None)
+    weekly_efficiency: Optional[float] = Field(alias="weeklyEfficiency", default=None)
+    monthly_efficiency: Optional[float] = Field(alias="monthlyEfficiency", default=None)
+    quarterly_efficiency: Optional[float] = Field(alias="quarterlyEfficiency", default=None)
+    six_month_efficiency: Optional[float] = Field(alias="sixMonthEfficiency", default=None)
+    annual_efficiency: Optional[float] = Field(alias="annualEfficiency", default=None)
+    statistical_nav: Optional[float] = Field(alias="statisticalNav", default=None)
+    efficiency: Optional[float] = Field(alias="efficiency", default=None)
+    cancel_nav: Optional[float] = Field(alias="cancelNav", default=None)
+    issue_nav: Optional[float] = Field(alias="issueNav", default=None)
+    dividend_interval_period: Optional[int] = Field(alias="dividendIntervalPeriod", default=None)
+    guaranteed_earning_rate: Optional[float] = Field(alias="guaranteedEarningRate", default=None)
+    data: Optional[str] = Field(alias="data", default=None)
+    net_asset: Optional[int] = Field(alias="netAsset", default=None)
+    estimated_earning_rate: Optional[float] = Field(alias="estimatedEarningRate", default=None)
+    invested_units: Optional[int] = Field(alias="investedUnits", default=None)
+    articles_of_association_link: Optional[str] = Field(alias="articlesOfAssociationLink", default=None)
+    prospectus_link: Optional[str] = Field(alias="prosoectusLink", default=None)
+    website_address: list = Field(alias='websiteAddress')
     manager: str
-    managerSeoRegisterNo: Optional[int] = None
-    guarantorSeoRegisterNo: Optional[int] = None
+    manager_seo_register_no: Optional[int] = Field(alias="managerSeoRegisterNo", default=None)
+    guarantor_seo_register_no: Optional[int] = Field(alias="guarantorSeoRegisterNo", default=None)
     auditor: str
     custodian: str
     guarantor: str
-    beta: Optional[float] = None
-    alpha: Optional[float] = None
-    isCompleted: bool
-    fiveBest: Optional[float] = None
-    stock: Optional[float] = None
-    bond: Optional[float] = None
-    other: Optional[float] = None
-    cash: Optional[float] = None
-    deposit: Optional[float] = None
-    fundUnit: Optional[float] = None
-    commodity: Optional[float] = None
-    fundPublisher: int
-    smallSymbolName: Optional[str] = None
-    insCode: Optional[str] = None
-    fundWatch: Optional[str] = None
+    beta: Optional[float] = Field(alias="beta", default=None)
+    alpha: Optional[float] = Field(alias="alpha", default=None)
+    is_completed: bool = Field(alias='isCompleted')
+    five_best: Optional[float] = Field(alias="fiveBest", default=None)
+    stock: Optional[float] = Field(alias="stock", default=None)
+    bond: Optional[float] = Field(alias="bond", default=None)
+    other: Optional[float] = Field(alias="other", default=None)
+    cash: Optional[float] = Field(alias="cash", default=None)
+    deposit: Optional[float] = Field(alias="deposit", default=None)
+    fund_unit: Optional[float] = Field(alias="fundUnit", default=None)
+    commodity: Optional[float] = Field(alias="commodity", default=None)
+    fund_publisher: int = Field(alias="fundPublisher")
+    small_symbol_name: Optional[str] = Field(alias="smallSymbolName", default=None)
+    ins_code: Optional[str] = Field(alias="insCode", default=None)
+    fund_watch: Optional[str] = Field(alias="fundWatch", default=None)
 
 data_list = []
 for i in range(0,len(data['items'])):
     data_list.append(DataV.model_validate(data['items'][i]))
 
 
-# 3- create table
-eg = create_engine('postgresql://username:password@localhost:5432/postgres')
+# # 3- create table
+eg = create_engine('postgresql://postgres:09101489397@localhost:5432/postgres')
 Base = declarative_base()
 Se = sessionmaker(bind=eg)
 se = Se()
 
 class CreateDb(Base):
     __tablename__ = 'dataBors'
-    regno = Column(BigInteger, primary_key=True)
+    reg_no = Column(BigInteger, primary_key=True)
     #
     name = Column(String, nullable=False)
-    rankof12month = Column(Float, nullable=True)
-    rankof24month = Column(Float, nullable=True)
-    rankof36month = Column(Float, nullable=True)
-    rankof48month = Column(Float, nullable=True)
-    rankof60month = Column(Float, nullable=True)
-    ranklastupdate = Column(DateTime, nullable=True)
-    fundtype = Column(Integer, nullable=False)
-    typeofinvest = Column(String, nullable=False)
-    fundsize = Column(BigInteger, nullable=True)
-    initiationdate = Column(DateTime, nullable=False)
-    dailyefficiency = Column(Float, nullable=True)
-    weeklyefficiency = Column(Float, nullable=True)
-    monthlyefficiency = Column(Float, nullable=True)
-    quarterlyefficiency = Column(Float, nullable=True)
-    sixmonthefficiency = Column(Float, nullable=True)
-    annualefficiency = Column(Float, nullable=True)
-    statisticalnav = Column(Float, nullable=True)
+    rank_of_12_month = Column(Float, nullable=True)
+    rank_of_24_month = Column(Float, nullable=True)
+    rank_of_36_month = Column(Float, nullable=True)
+    rank_of_48_month = Column(Float, nullable=True)
+    rank_of_60_month = Column(Float, nullable=True)
+    rank_last_update = Column(DateTime, nullable=True)
+    fund_type = Column(Integer, nullable=False)
+    type_of_invest = Column(String, nullable=False)
+    fund_size = Column(BigInteger, nullable=True)
+    initiation_date = Column(DateTime, nullable=False)
+    daily_efficiency = Column(Float, nullable=True)
+    weekly_efficiency = Column(Float, nullable=True)
+    monthly_efficiency = Column(Float, nullable=True)
+    quarterly_efficiency = Column(Float, nullable=True)
+    six_month_efficiency = Column(Float, nullable=True)
+    annual_efficiency = Column(Float, nullable=True)
+    statistical_nav = Column(Float, nullable=True)
     efficiency = Column(Float, nullable=True)
-    cancelnav = Column(Float, nullable=True)
-    issuenav = Column(Float, nullable=True)
-    dividendintervalperiod = Column(BigInteger, nullable=True)
+    cancel_nav = Column(Float, nullable=True)
+    issue_nav = Column(Float, nullable=True)
+    dividend_interval_period = Column(BigInteger, nullable=True)
     #
-    guaranteedearningrate = Column(Float, nullable=True)
+    guaranteed_earning_rate = Column(Float, nullable=True)
     data = Column(String, nullable=True)
-    netasset = Column(BigInteger, nullable=True)
-    estimatedearningrate = Column(Float, nullable=True)
-    investedunits = Column(BigInteger, nullable=True)
-    articlesofassociationlink = Column(String, nullable=True)
-    prosoectuslink = Column(String, nullable=True)
-    websiteaddress = Column(String, nullable=True)
+    net_asset = Column(BigInteger, nullable=True)
+    estimated_earning_rate = Column(Float, nullable=True)
+    invested_units = Column(BigInteger, nullable=True)
+    articles_of_association_link = Column(String, nullable=True)
+    prospectus_link = Column(String, nullable=True)
+    website_address = Column(String, nullable=True)
     manager = Column(String, nullable=False)
-    managerseoregisterno = Column(BigInteger, nullable=True)
+    manager_seo_register_no = Column(BigInteger, nullable=True)
     #
-    guarantorseoregisterno = Column(BigInteger, nullable=True)
+    guarantor_seo_register_no = Column(BigInteger, nullable=True)
     #
     auditor = Column(String, nullable=True)
     custodian = Column(String, nullable=True)
     guarantor = Column(String, nullable=True)
     beta = Column(Float, nullable=True)
     alpha = Column(Float, nullable=True)
-    iscompleted = Column(Boolean, nullable=False)
-    fivebest = Column(Float, nullable=True)
+    is_completed = Column(Boolean, nullable=False)
+    five_best = Column(Float, nullable=True)
     stock = Column(Float, nullable=True)
     bond = Column(Float, nullable=True)
     other = Column(Float, nullable=True)
     cash = Column(Float, nullable=True)
     deposit = Column(Float, nullable=True)
-    fundunit = Column(Float, nullable=True)
+    fund_unit = Column(Float, nullable=True)
     commodity = Column(Float, nullable=True)
-    fundpublisher = Column(BigInteger, nullable=True)
+    fund_publisher = Column(BigInteger, nullable=True)
     #
-    smallsymbolname = Column(String, nullable=True)
-    inscode = Column(String, nullable=True)
-    fundwatch = Column(String, nullable=True)
-
+    small_symbol_name = Column(String, nullable=True)
+    ins_code = Column(String, nullable=True)
+    fund_watch = Column(String, nullable=True)
 Base.metadata.create_all(eg)
 
 # 4- store data in table
 for values in data_list:
     row = CreateDb(
-        regno=values.regNo,
+        reg_no=values.reg_no,
         name=values.name,
-        rankof12month=values.rank0f12Month,
-        rankof24month=values.rank0f24Month,
-        rankof36month=values.rank0f36Month,
-        rankof48month=values.rank0f48Month,
-        rankof60month=values.rank0f60Month,
-        ranklastupdate=values.rankLastUpdate,
-        fundtype=values.fundType,
-        typeofinvest=values.typeOfInvest,
-        fundsize=values.fundSize,
-        initiationdate=values.initiationDate,
-        dailyefficiency=values.dailyEfficiency,
-        weeklyefficiency=values.weeklyEfficiency,
-        monthlyefficiency=values.monthlyEfficiency,
-        quarterlyefficiency=values.quarterlyEfficiency,
-        sixmonthefficiency=values.sixMonthEfficiency,
-        annualefficiency=values.annualEfficiency,
-        statisticalnav=values.statisticalNav,
+        rank_of_12_month=values.rank_of_12_month,
+        rank_of_24_month=values.rank_of_24_month,
+        rank_of_36_month=values.rank_of_36_month,
+        rank_of_48_month=values.rank_of_48_month,
+        rank_of_60_month=values.rank_of_60_month,
+        rank_last_update=values.rank_last_update,
+        fund_type=values.fund_type,
+        type_of_invest=values.type_of_invest,
+        fund_size=values.fund_size,
+        initiation_date=values.initiation_date,
+        daily_efficiency=values.daily_efficiency,
+        weekly_efficiency=values.weekly_efficiency,
+        monthly_efficiency=values.monthly_efficiency,
+        quarterly_efficiency=values.quarterly_efficiency,
+        six_month_efficiency=values.six_month_efficiency,
+        annual_efficiency=values.annual_efficiency,
+        statistical_nav=values.statistical_nav,
         efficiency=values.efficiency,
-        cancelnav=values.cancelNav,
-        issuenav=values.issueNav,
-        dividendintervalperiod=values.dividendIntervalPeriod,
-        guaranteedearningrate=values.guaranteedEarningRate,
+        cancel_nav=values.cancel_nav,
+        issue_nav=values.issue_nav,
+        dividend_interval_period=values.dividend_interval_period,
+        guaranteed_earning_rate=values.guaranteed_earning_rate,
         data=values.data,
-        netasset=values.netAsset,
-        estimatedearningrate=values.estimatedEarningRate,
-        investedunits=values.investedUnits,
-        articlesofassociationlink=values.articlesOfAssociationLink,
-        prosoectuslink=values.prosoectusLink,
-        websiteaddress=','.join(values.websiteAddress),
+        net_asset=values.net_asset,
+        estimated_earning_rate=values.estimated_earning_rate,
+        invested_units=values.invested_units,
+        articles_of_association_link=values.articles_of_association_link,
+        prospectus_link=values.prospectus_link,
+        website_address=','.join(values.website_address),
         manager=values.manager,
-        managerseoregisterno=values.managerSeoRegisterNo,
-        guarantorseoregisterno=values.guarantorSeoRegisterNo,
+        manager_seo_register_no=values.manager_seo_register_no,
+        guarantor_seo_register_no=values.guarantor_seo_register_no,
         auditor=values.auditor,
         custodian=values.custodian,
         guarantor=values.guarantor,
         beta=values.beta,
         alpha=values.alpha,
-        iscompleted=values.isCompleted,
-        fivebest=values.fiveBest,
+        is_completed=values.is_completed,
+        five_best=values.five_best,
         stock=values.stock,
         bond=values.bond,
         other=values.other,
         cash=values.cash,
         deposit=values.deposit,
-        fundunit=values.fundUnit,
+        fund_unit=values.fund_unit,
         commodity=values.commodity,
-        fundpublisher=values.fundPublisher,
-        smallsymbolname=values.smallSymbolName,
-        inscode=values.insCode,
-        fundwatch=values.fundWatch,
+        fund_publisher=values.fund_publisher,
+        small_symbol_name=values.small_symbol_name,
+        ins_code=values.ins_code,
+        fund_watch=values.fund_watch,
     )
     se.add(row)
 se.commit()
