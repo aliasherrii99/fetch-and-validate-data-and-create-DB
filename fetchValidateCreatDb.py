@@ -1,81 +1,97 @@
 import requests
-from pydantic import BaseModel , Field
+from pydantic import BaseModel, Field, AliasGenerator, ConfigDict
 from typing import Optional
 import json
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column , Integer, String , BigInteger , Float , Boolean , DateTime
-
-
+from sqlalchemy import Column, Integer, String, BigInteger, Float, Boolean, DateTime
 
 # 1- get data
 url = 'https://fund.fipiran.ir/api/v1/fund/fundcompare'
 response = requests.get(url)
 data = json.loads(response.text)
 
-# 2- validate data
+def change_value(val):
+    new_val = ''
+    for i in range(0, len(val)):
+        if val[i] == '_':
+            new_val += val[i + 1].upper()
+        else:
+            new_val += val[i]
+    final_val = ''
+    for j in range(0 , len(new_val)):
+        if new_val[j].upper() != new_val[j - 1]:
+            final_val += new_val[j]
+    return final_val
+
+ # 2- validate data
 class DataV(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=change_value
+    )
+
     reg_no: int = Field(alias="regNo")
     name: str
-    rank_of_12_month: Optional[int] = Field(alias="rank0f12Month", default=None)
-    rank_of_24_month: Optional[int] = Field(alias="rank0f24Month", default=None)
-    rank_of_36_month: Optional[int] = Field(alias="rank0f36Month", default=None)
-    rank_of_48_month: Optional[int] = Field(alias="rank0f48Month", default=None)
-    rank_of_60_month: Optional[int] = Field(alias="rank0f60Month", default=None)
-    rank_last_update: str = Field(alias="rankLastUpdate")
-    fund_type: int = Field(alias="fundType")
-    type_of_invest: str = Field(alias="typeOfInvest")
-    fund_size: Optional[int] = Field(alias="fundSize", default=None)
-    initiation_date: str = Field(alias="initiationDate")
-    daily_efficiency: Optional[float] = Field(alias="dailyEfficiency", default=None)
-    weekly_efficiency: Optional[float] = Field(alias="weeklyEfficiency", default=None)
-    monthly_efficiency: Optional[float] = Field(alias="monthlyEfficiency", default=None)
-    quarterly_efficiency: Optional[float] = Field(alias="quarterlyEfficiency", default=None)
-    six_month_efficiency: Optional[float] = Field(alias="sixMonthEfficiency", default=None)
-    annual_efficiency: Optional[float] = Field(alias="annualEfficiency", default=None)
-    statistical_nav: Optional[float] = Field(alias="statisticalNav", default=None)
-    efficiency: Optional[float] = Field(alias="efficiency", default=None)
-    cancel_nav: Optional[float] = Field(alias="cancelNav", default=None)
-    issue_nav: Optional[float] = Field(alias="issueNav", default=None)
-    dividend_interval_period: Optional[int] = Field(alias="dividendIntervalPeriod", default=None)
-    guaranteed_earning_rate: Optional[float] = Field(alias="guaranteedEarningRate", default=None)
-    data: Optional[str] = Field(alias="data", default=None)
-    net_asset: Optional[int] = Field(alias="netAsset", default=None)
-    estimated_earning_rate: Optional[float] = Field(alias="estimatedEarningRate", default=None)
-    invested_units: Optional[int] = Field(alias="investedUnits", default=None)
-    articles_of_association_link: Optional[str] = Field(alias="articlesOfAssociationLink", default=None)
-    prospectus_link: Optional[str] = Field(alias="prosoectusLink", default=None)
-    website_address: list = Field(alias='websiteAddress')
+    rank_of_12_month: Optional[int] = None
+    rank_of_24_month: Optional[int] = None
+    rank_of_36_month: Optional[int] = None
+    rank_of_48_month: Optional[int] = None
+    rank_of_60_month: Optional[int] = None
+    rank_last_update: str
+    fund_type: int
+    type_of_invest: str
+    fund_size: Optional[int] = None
+    initiation_date: str
+    daily_efficiency: Optional[float] = None
+    weekly_efficiency: Optional[float] = None
+    monthly_efficiency: Optional[float] = None
+    quarterly_efficiency: Optional[float] = None
+    six_month_efficiency: Optional[float] = None
+    annual_efficiency: Optional[float] = None
+    statistical_nav: Optional[float] = None
+    efficiency: Optional[float] = None
+    cancel_nav: Optional[float] = None
+    issue_nav: Optional[float] = None
+    dividend_interval_period: Optional[int] = None
+    guaranteed_earning_rate: Optional[float] = None
+    data: Optional[str] = None
+    net_asset: Optional[int] = None
+    estimated_earning_rate: Optional[float] = None
+    invested_units: Optional[int] = None
+    articles_of_association_link: Optional[str] = None
+    prospectus_link: Optional[str] = None
+    website_address: list
     manager: str
-    manager_seo_register_no: Optional[int] = Field(alias="managerSeoRegisterNo", default=None)
-    guarantor_seo_register_no: Optional[int] = Field(alias="guarantorSeoRegisterNo", default=None)
+    manager_seo_register_no: Optional[int] = None
+    guarantor_seo_register_no: Optional[int] = None
     auditor: str
     custodian: str
     guarantor: str
-    beta: Optional[float] = Field(alias="beta", default=None)
-    alpha: Optional[float] = Field(alias="alpha", default=None)
-    is_completed: bool = Field(alias='isCompleted')
-    five_best: Optional[float] = Field(alias="fiveBest", default=None)
-    stock: Optional[float] = Field(alias="stock", default=None)
-    bond: Optional[float] = Field(alias="bond", default=None)
-    other: Optional[float] = Field(alias="other", default=None)
-    cash: Optional[float] = Field(alias="cash", default=None)
-    deposit: Optional[float] = Field(alias="deposit", default=None)
-    fund_unit: Optional[float] = Field(alias="fundUnit", default=None)
-    commodity: Optional[float] = Field(alias="commodity", default=None)
-    fund_publisher: int = Field(alias="fundPublisher")
-    small_symbol_name: Optional[str] = Field(alias="smallSymbolName", default=None)
-    ins_code: Optional[str] = Field(alias="insCode", default=None)
-    fund_watch: Optional[str] = Field(alias="fundWatch", default=None)
+    beta: Optional[float] = None
+    alpha: Optional[float] = None
+    is_completed: bool
+    five_best: Optional[float] = None
+    stock: Optional[float] = None
+    bond: Optional[float] = None
+    other: Optional[float] = None
+    cash: Optional[float] = None
+    deposit: Optional[float] = None
+    fund_unit: Optional[float] = None
+    commodity: Optional[float] = None
+    fund_publisher: int
+    small_symbol_name: Optional[str] = None
+    ins_code: Optional[str] = None
+    fund_watch: Optional[str] = None
+
 
 data_list = []
-for i in range(0,len(data['items'])):
+for i in range(0, len(data['items'])):
     data_list.append(DataV.model_validate(data['items'][i]))
 
 
-# # 3- create table
-eg = create_engine('postgresql://postgres:09101489397@localhost:5432/postgres')
+# 3- create table
+eg = create_engine('postgresql://username:passw@localhost:5432/postgres')
 Base = declarative_base()
 Se = sessionmaker(bind=eg)
 se = Se()
@@ -83,7 +99,6 @@ se = Se()
 class CreateDb(Base):
     __tablename__ = 'dataBors'
     reg_no = Column(BigInteger, primary_key=True)
-    #
     name = Column(String, nullable=False)
     rank_of_12_month = Column(Float, nullable=True)
     rank_of_24_month = Column(Float, nullable=True)

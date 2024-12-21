@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine , text
-engine = create_engine("postgresql://postgres:09101489397@localhost:5432/postgres")
+from sqlalchemy import create_engine, text
+engine = create_engine("postgresql://username:passw@localhost:5432/postgres")
 
 # choose row with regno
-list_of_fundstype = list()
+list_of_fundstype=list()
 with engine.connect() as connection:
     query = text(
         'SELECT DISTINCT fundtype FROM public."dataBors" ORDER BY fundtype'

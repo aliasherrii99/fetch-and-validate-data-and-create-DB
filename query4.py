@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine , text
-engine = create_engine("postgresql://postgres:09101489397@localhost:5432/postgres")
+from sqlalchemy import create_engine, text
+engine = create_engine("postgresql://username:passw@localhost:5432/postgres")
 
 def number_after_date(mydate):
     with engine.connect() as connection:
